@@ -5,8 +5,11 @@ import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
 import { signOutUser } from "@/firebase/auth";
+import { useRouter } from "next/navigation";
 
 function Header() {
+  const router = useRouter();
+
   const { user } = useAuth();
 
   return (
@@ -14,7 +17,12 @@ function Header() {
       <div className="absolute inset-0 bg-amber-600 opacity-60"></div>
 
       <div className="relative container mx-auto px-4 flex items-center justify-between">
-        <h1 className="text-center text-5xl py-2 text-amber-950 font-serif">
+        <h1
+          className="text-center text-5xl py-2 text-amber-950 font-black hover:cursor-pointer"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
           Blue Titans
         </h1>
         {user && (
@@ -37,14 +45,14 @@ function Header() {
                       ? user.displayName.charAt(0).toUpperCase()
                       : user.email
                       ? user.email.charAt(0).toUpperCase()
-                      : 'U'}
+                      : "U"}
                   </div>
                 )}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-fit" align="end">
               <div className="space-y-2">
-                <div className="font-medium">{user.displayName || 'User'}</div>
+                <div className="font-medium">{user.displayName || "User"}</div>
                 <div className="text-sm text-gray-500">{user.email}</div>
                 {user.emailVerified && (
                   <div className="text-xs text-green-600">Email verified</div>

@@ -134,60 +134,60 @@ export default function Home() {
     }
   };
 
-  const training = async () => {
-    if (!uploadedFile) {
-      alert("Please upload a file first.");
-      return;
-    }
-    if (processing) {
-      return;
-    }
+  // const training = async () => {
+  //   if (!uploadedFile) {
+  //     alert("Please upload a file first.");
+  //     return;
+  //   }
+  //   if (processing) {
+  //     return;
+  //   }
 
-    if (!user && !loading) {
-      router.push("/login");
-    }
-    setProcessing("training");
+  //   if (!user && !loading) {
+  //     router.push("/login");
+  //   }
+  //   setProcessing("training");
 
-    try {
-      console.log("Training audio file:", uploadedFile);
-      const fileType = uploadedFile.type;
-      const fileSize = uploadedFile.size;
-      console.log("File type:", fileType);
-      console.log("File size:", fileSize);
+  //   try {
+  //     console.log("Training audio file:", uploadedFile);
+  //     const fileType = uploadedFile.type;
+  //     const fileSize = uploadedFile.size;
+  //     console.log("File type:", fileType);
+  //     console.log("File size:", fileSize);
 
-      const token = await getToken();
-      if (!token) {
-        throw new Error("Authentication required. Please sign in.");
-      }
+  //     const token = await getToken();
+  //     if (!token) {
+  //       throw new Error("Authentication required. Please sign in.");
+  //     }
 
-      const formData = new FormData();
-      formData.append("audio", uploadedFile);
+  //     const formData = new FormData();
+  //     formData.append("audio", uploadedFile);
 
-      const response = await fetch(`${API_URL}/training`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+  //     const response = await fetch(`${API_URL}/training`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: formData,
+  //     });
 
-      if (!response.ok) throw new Error("Failed to train audio");
+  //     if (!response.ok) throw new Error("Failed to train audio");
 
-      const result = await response.json();
+  //     const result = await response.json();
 
-      setResult({
-        resultType: "Training",
-        trainingResult: { message: result.message } as TrainingResult,
-      } as Result);
+  //     setResult({
+  //       resultType: "Training",
+  //       trainingResult: { message: result.message } as TrainingResult,
+  //     } as Result);
 
-      console.log("Training result:", result.result as AnalysisResult);
-    } catch (error) {
-      console.error("Error training audio:", error);
-      alert("Failed to train audio.");
-    } finally {
-      setProcessing(null);
-    }
-  };
+  //     console.log("Training result:", result.result as AnalysisResult);
+  //   } catch (error) {
+  //     console.error("Error training audio:", error);
+  //     alert("Failed to train audio.");
+  //   } finally {
+  //     setProcessing(null);
+  //   }
+  // };
 
   const analyzeMusic = async () => {
     if (!uploadedFile) {
@@ -282,7 +282,11 @@ export default function Home() {
               <div className="flex flex-col items-center gap-2 md:gap-3 py-4 md:py-6">
                 <Spinner />
                 <p className="text-amber-800 text-sm md:text-base">
-                  Analyzing your music...
+                  {processing === "training"
+                    ? "Evaluating..."
+                    : processing === "synthesis"
+                    ? "Synthesizing your audio..."
+                    : "Analyzing your music..."}
                 </p>
               </div>
             )}
@@ -374,7 +378,12 @@ export default function Home() {
                   <span className="">Synthesise Music</span>
                 </button>
                 <button
-                  onClick={() => training()}
+                  onClick={
+                    // () => training()
+                    () => {
+                      router.push("/PracticeWithAI");
+                    }
+                  }
                   className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-2 md:py-3 rounded-lg font-medium hover:from-amber-700 hover:to-amber-800 transition-all shadow-md hover:shadow-lg flex items-center justify-center text-lg md:text-base hover:cursor-pointer"
                 >
                   <span className="">Train with AI</span>
